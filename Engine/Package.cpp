@@ -118,8 +118,8 @@ void Package::GeneratePrerequisites(const UEObject& obj, std::unordered_map<UEOb
 	}
 
 	const auto name = obj.GetName();
-	if (/*name.find("Default__") != std::string::npos
-		|| */name.find("<uninitialized>") != std::string::npos
+	if (name.find("Default__") != std::string::npos
+		|| name.find("<uninitialized>") != std::string::npos
 		|| name.find("PLACEHOLDER-CLASS") != std::string::npos)
 	{
 		return;
