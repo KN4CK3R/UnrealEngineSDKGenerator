@@ -142,10 +142,13 @@ void Package::GeneratePrerequisites(const UEObject& obj, std::unordered_map<UEOb
 	{
 		processedObjects[obj] = true;
 
-		auto outer = obj.GetOuter();
-		if (outer.IsValid() && outer != obj)
+		if (!isScriptStruct)
 		{
-			GeneratePrerequisites(outer, processedObjects);
+			auto outer = obj.GetOuter();
+			if (outer.IsValid() && outer != obj)
+			{
+				GeneratePrerequisites(outer, processedObjects);
+			}
 		}
 
 		auto structObj = obj.Cast<UEStruct>();
