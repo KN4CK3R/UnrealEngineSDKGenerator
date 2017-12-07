@@ -5,7 +5,7 @@
 #include "IGenerator.hpp"
 #include "Package.hpp"
 
-void PrintFileHeader(std::ostream& os, const std::vector<std::string>& includes, bool isHeaderFile)
+void PrintFileHeader(std::ostream& os, const std::vector<std::string>& includes, const bool isHeaderFile)
 {
 	extern IGenerator* generator;
 
@@ -29,7 +29,7 @@ void PrintFileHeader(std::ostream& os, const std::vector<std::string>& includes,
 	}
 }
 
-void PrintFileHeader(std::ostream& os, bool isHeaderFile)
+void PrintFileHeader(std::ostream& os, const bool isHeaderFile)
 {
 	extern IGenerator* generator;
 
@@ -55,7 +55,7 @@ void PrintSectionHeader(std::ostream& os, const char* name)
 		<< "//---------------------------------------------------------------------------\n\n";
 }
 
-std::string GenerateFileName(FileContentType type, const Package& package)
+std::string GenerateFileName(const FileContentType type, const Package& package)
 {
 	extern IGenerator* generator;
 

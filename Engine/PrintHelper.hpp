@@ -3,9 +3,9 @@
 #include <vector>
 #include <string>
 
-void PrintFileHeader(std::ostream& os, const std::vector<std::string>& includes, bool isHeaderFile);
+void PrintFileHeader(std::ostream& os, const std::vector<std::string>& includes, const bool isHeaderFile);
 
-void PrintFileHeader(std::ostream& os, bool isHeaderFile);
+void PrintFileHeader(std::ostream& os, const bool isHeaderFile);
 
 void PrintFileFooter(std::ostream& os);
 
@@ -26,4 +26,4 @@ enum class FileContentType
 /// <returns>
 /// The generated file name.
 /// </returns>
-std::string GenerateFileName(FileContentType type, const class Package& package);
+std::string GenerateFileName(const FileContentType type, const class Package& package);
