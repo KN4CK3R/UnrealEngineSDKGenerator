@@ -19,7 +19,17 @@ void PrintFileHeader(std::ostream& os, const std::vector<std::string>& includes,
 
 	if (!includes.empty())
 	{
-		for (auto&& i : includes) { os << "#include " << i << "\n"; }
+		for (auto&& i : includes)
+		{
+			if (i[0] != '<' && i[0] != '"')
+			{
+				os << "#include \"" << i << "\"\n";
+			}
+			else
+			{
+				os << "#include " << i << "\n";
+			}
+		}
 		os << "\n";
 	}
 
