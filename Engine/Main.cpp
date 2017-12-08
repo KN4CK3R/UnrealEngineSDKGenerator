@@ -57,7 +57,7 @@ void Dump(const fs::path& path)
 /// <param name="path">The path where to create the sdk header.</param>
 /// <param name="processedObjects">The list of processed objects.</param>
 /// <param name="packageOrder">The package order info.</param>
-void SaveSDKHeader(const fs::path& path, const std::unordered_map<UEObject, bool>& processedObjects, const std::vector<std::unique_ptr<Package>>& packages)
+void SaveSDKHeader(const fs::path& path, const std::unordered_map<UEObject, bool>& processedObjects, const std::vector<Package>& packages)
 {
 	std::ofstream os(path / "SDK.hpp");
 
@@ -121,7 +121,7 @@ void SaveSDKHeader(const fs::path& path, const std::unordered_map<UEObject, bool
 
 	for (auto&& package : packages)
 	{
-		os << R"(#include "SDK/)" << GenerateFileName(FileContentType::Classes, *package) << "\"\n";
+		os << R"(#include "SDK/)" << GenerateFileName(FileContentType::Classes, package) << "\"\n";
 	}
 }
 
@@ -136,7 +136,7 @@ void ProcessPackages(const fs::path& path)
 	const auto sdkPath = path / "SDK";
 	fs::create_directories(sdkPath);
 	
-	std::vector<std::unique_ptr<Package>> packages;
+	std::vector<Package> packages;
 
 	std::unordered_map<UEObject, bool> processedObjects;
 
@@ -148,10 +148,10 @@ void ProcessPackages(const fs::path& path)
 
 	for (auto obj : packageObjects)
 	{
-		auto package = std::make_unique<Package>(obj);
+		Package package(obj);
 
-		package->Process(processedObjects);
-		if (package->Save(sdkPath))
+		package.Process(processedObjects);
+		if (package.Save(sdkPath))
 		{
 			packages.emplace_back(std::move(package));
 		}
