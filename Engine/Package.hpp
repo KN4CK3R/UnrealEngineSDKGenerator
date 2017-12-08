@@ -15,8 +15,6 @@ class Package
 	friend bool operator==(const Package& lhs, const Package& rhs);
 
 public:
-	static std::unordered_map<UEObject, const Package*> PackageMap;
-
 	/// <summary>
 	/// Constructor.
 	/// </summary>

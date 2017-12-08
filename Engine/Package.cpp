@@ -14,8 +14,6 @@
 #include "FunctionFlags.hpp"
 #include "PrintHelper.hpp"
 
-std::unordered_map<UEObject, const Package*> Package::PackageMap;
-
 /// <summary>
 /// Compare two properties.
 /// </summary>
@@ -705,9 +703,7 @@ void Package::SaveStructs(const fs::path& path) const
 	std::vector<std::string> includes{ { tfm::format("%s_Basic.hpp", generator->GetGameNameShort()) } };
 
 	auto dependencyNames = from(this->dependencies)
-		>> select([](auto&& o) { return PackageMap[o]; })
-		>> where([](auto&& p) { return p != nullptr; })
-		>> select([](auto&& p) { return GenerateFileName(FileContentType::Classes, *p); })
+		>> select([](auto&& p) { return GenerateFileName(FileContentType::Classes, Package(p)); })
 		>> experimental::container();
 
 	includes.insert(includes.end(), std::begin(dependencyNames), std::end(dependencyNames));

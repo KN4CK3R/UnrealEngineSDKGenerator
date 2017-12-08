@@ -153,8 +153,6 @@ void ProcessPackages(const fs::path& path)
 		package->Process(processedObjects);
 		if (package->Save(sdkPath))
 		{
-			Package::PackageMap[obj] = package.get();
-
 			packages.emplace_back(std::move(package));
 		}
 	}
