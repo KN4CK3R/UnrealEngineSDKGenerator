@@ -64,20 +64,17 @@ void SaveSDKHeader(const fs::path& path, const std::unordered_map<UEObject, bool
 	os << "#pragma once\n\n"
 		<< tfm::format("// %s (%s) SDK\n\n", generator->GetGameName(), generator->GetGameVersion());
 
-	//Includes
-	os << "#include <set>\n";
-	os << "#include <string>\n";
-	for (auto&& i : generator->GetIncludes())
-	{
-		os << "#include " << i << "\n";
-	}
-
 	//include the basics
 	{
 		{
 			std::ofstream os2(path / "SDK" / tfm::format("%s_Basic.hpp", generator->GetGameNameShort()));
 
-			PrintFileHeader(os2, true);
+			std::vector<std::string> includes{ { "<unordered_set>" }, { "<string>" } };
+
+			auto&& generatorIncludes = generator->GetIncludes();
+			includes.insert(includes.end(), std::begin(generatorIncludes), std::end(generatorIncludes));
+
+			PrintFileHeader(os2, includes, true);
 			
 			os2 << generator->GetBasicDeclarations() << "\n";
 
@@ -88,7 +85,7 @@ void SaveSDKHeader(const fs::path& path, const std::unordered_map<UEObject, bool
 		{
 			std::ofstream os2(path / "SDK" / tfm::format("%s_Basic.cpp", generator->GetGameNameShort()));
 
-			PrintFileHeader(os2, { "\"../SDK.hpp\"" }, false);
+			PrintFileHeader(os2, { "../SDK.hpp" }, false);
 
 			os2 << generator->GetBasicDefinitions() << "\n";
 
@@ -124,12 +121,7 @@ void SaveSDKHeader(const fs::path& path, const std::unordered_map<UEObject, bool
 
 	for (auto&& package : packages)
 	{
-		os << R"(#include "SDK/)" << GenerateFileName(FileContentType::Structs, *package) << "\"\n";
 		os << R"(#include "SDK/)" << GenerateFileName(FileContentType::Classes, *package) << "\"\n";
-		if (generator->ShouldGenerateFunctionParametersFile())
-		{
-			os << R"(#include "SDK/)" << GenerateFileName(FileContentType::FunctionParameters, *package) << "\"\n";
-		}
 	}
 }
 
@@ -167,7 +159,7 @@ void ProcessPackages(const fs::path& path)
 		}
 	}
 
-	if (!packages.empty())
+	/*if (!packages.empty())
 	{
 		// std::sort doesn't work, so use a simple bubble sort
 		//std::sort(std::begin(packages), std::end(packages), PackageDependencyComparer());
@@ -182,7 +174,7 @@ void ProcessPackages(const fs::path& path)
 				}
 			}
 		}
-	}
+	}*/
 
 	SaveSDKHeader(path, processedObjects, packages);
 }
