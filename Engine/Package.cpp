@@ -34,18 +34,6 @@ bool ComparePropertyLess(const UEProperty& lhs, const UEProperty& rhs)
 	return lhs.GetOffset() < rhs.GetOffset();
 }
 
-bool HasSkipName(const UEObject& object)
-{
-	const auto name = object.GetName();
-	if (name.find("Default__") != std::string::npos
-		|| name.find("<uninitialized>") != std::string::npos
-		|| name.find("PLACEHOLDER-CLASS") != std::string::npos)
-	{
-		return true;
-	}
-	return false;
-}
-
 Package::Package(const UEObject& _packageObj)
 	: packageObj(_packageObj)
 {
