@@ -34,6 +34,18 @@ bool ComparePropertyLess(const UEProperty& lhs, const UEProperty& rhs)
 	return lhs.GetOffset() < rhs.GetOffset();
 }
 
+bool HasSkipName(const UEObject& object)
+{
+	const auto name = object.GetName();
+	if (name.find("Default__") != std::string::npos
+		|| name.find("<uninitialized>") != std::string::npos
+		|| name.find("PLACEHOLDER-CLASS") != std::string::npos)
+	{
+		return true;
+	}
+	return false;
+}
+
 Package::Package(const UEObject& _packageObj)
 	: packageObj(_packageObj)
 {
@@ -698,9 +710,21 @@ void Package::SaveStructs(const fs::path& path) const
 {
 	extern IGenerator* generator;
 
+	using namespace cpplinq;
+
 	std::ofstream os(path / GenerateFileName(FileContentType::Structs, *this));
 
-	PrintFileHeader(os, true);
+	std::vector<std::string> includes{ { tfm::format("%s_Basic.hpp", generator->GetGameNameShort()) } };
+
+	auto dependencyNames = from(this->dependencies)
+		>> select([](auto&& o) { return PackageMap[o]; })
+		>> where([](auto&& p) { return p != nullptr; })
+		>> select([](auto&& p) { return GenerateFileName(FileContentType::Classes, *p); })
+		>> experimental::container();
+
+	includes.insert(includes.end(), std::begin(dependencyNames), std::end(dependencyNames));
+
+	PrintFileHeader(os, includes, true);
 
 	if (!constants.empty())
 	{
@@ -733,7 +757,7 @@ void Package::SaveClasses(const fs::path& path) const
 
 	std::ofstream os(path / GenerateFileName(FileContentType::Classes, *this));
 
-	PrintFileHeader(os, true);
+	PrintFileHeader(os, { GenerateFileName(FileContentType::Structs, *this) }, true);
 
 	if (!classes.empty())
 	{
@@ -748,8 +772,6 @@ void Package::SaveFunctions(const fs::path& path) const
 {
 	extern IGenerator* generator;
 
-	using namespace cpplinq;
-
 	if (generator->ShouldGenerateFunctionParametersFile())
 	{
 		SaveFunctionParameters(path);
@@ -757,7 +779,7 @@ void Package::SaveFunctions(const fs::path& path) const
 
 	std::ofstream os(path / GenerateFileName(FileContentType::Functions, *this));
 
-	PrintFileHeader(os, { "\"../SDK.hpp\"" }, false);
+	PrintFileHeader(os, { GenerateFileName(FileContentType::FunctionParameters, *this) }, false);
 
 	PrintSectionHeader(os, "Functions");
 
@@ -811,7 +833,7 @@ void Package::SaveFunctionParameters(const fs::path& path) const
 
 	std::ofstream os(path / GenerateFileName(FileContentType::FunctionParameters, *this));
 
-	PrintFileHeader(os, { "\"../SDK.hpp\"" }, true);
+	PrintFileHeader(os, { GenerateFileName(FileContentType::Classes, *this) }, true);
 
 	PrintSectionHeader(os, "Parameters");
 
