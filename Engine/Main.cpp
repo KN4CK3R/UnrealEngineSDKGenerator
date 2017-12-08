@@ -159,23 +159,6 @@ void ProcessPackages(const fs::path& path)
 		}
 	}
 
-	/*if (!packages.empty())
-	{
-		// std::sort doesn't work, so use a simple bubble sort
-		//std::sort(std::begin(packages), std::end(packages), PackageDependencyComparer());
-		const PackageDependencyComparer comparer;
-		for (auto i = 0u; i < packages.size() - 1; ++i)
-		{
-			for (auto j = 0u; j < packages.size() - i - 1; ++j)
-			{
-				if (!comparer(packages[j], packages[j + 1]))
-				{
-					std::swap(packages[j], packages[j + 1]);
-				}
-			}
-		}
-	}*/
-
 	SaveSDKHeader(path, processedObjects, packages);
 }
 
