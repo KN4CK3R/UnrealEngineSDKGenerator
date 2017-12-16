@@ -75,6 +75,8 @@ void ObjectsIterator::swap(ObjectsIterator& other) noexcept
 
 ObjectsIterator& ObjectsIterator::operator++()
 {
+	current = UEObject();
+
 	for (++index; index < store.GetObjectsNum(); ++index)
 	{
 		current = store.GetById(index);
