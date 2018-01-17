@@ -57,27 +57,24 @@ void Dump(const fs::path& path)
 /// <param name="path">The path where to create the sdk header.</param>
 /// <param name="processedObjects">The list of processed objects.</param>
 /// <param name="packageOrder">The package order info.</param>
-void SaveSDKHeader(const fs::path& path, const std::unordered_map<UEObject, bool>& processedObjects, const std::vector<std::unique_ptr<Package>>& packages)
+void SaveSDKHeader(const fs::path& path, const std::unordered_map<UEObject, bool>& processedObjects, const std::vector<Package>& packages)
 {
 	std::ofstream os(path / "SDK.hpp");
 
 	os << "#pragma once\n\n"
 		<< tfm::format("// %s (%s) SDK\n\n", generator->GetGameName(), generator->GetGameVersion());
 
-	//Includes
-	os << "#include <set>\n";
-	os << "#include <string>\n";
-	for (auto&& i : generator->GetIncludes())
-	{
-		os << "#include " << i << "\n";
-	}
-
 	//include the basics
 	{
 		{
 			std::ofstream os2(path / "SDK" / tfm::format("%s_Basic.hpp", generator->GetGameNameShort()));
 
-			PrintFileHeader(os2, true);
+			std::vector<std::string> includes{ { "<unordered_set>" }, { "<string>" } };
+
+			auto&& generatorIncludes = generator->GetIncludes();
+			includes.insert(includes.end(), std::begin(generatorIncludes), std::end(generatorIncludes));
+
+			PrintFileHeader(os2, includes, true);
 			
 			os2 << generator->GetBasicDeclarations() << "\n";
 
@@ -88,7 +85,7 @@ void SaveSDKHeader(const fs::path& path, const std::unordered_map<UEObject, bool
 		{
 			std::ofstream os2(path / "SDK" / tfm::format("%s_Basic.cpp", generator->GetGameNameShort()));
 
-			PrintFileHeader(os2, { "\"../SDK.hpp\"" }, false);
+			PrintFileHeader(os2, { "../SDK.hpp" }, false);
 
 			os2 << generator->GetBasicDefinitions() << "\n";
 
@@ -124,12 +121,7 @@ void SaveSDKHeader(const fs::path& path, const std::unordered_map<UEObject, bool
 
 	for (auto&& package : packages)
 	{
-		os << R"(#include "SDK/)" << GenerateFileName(FileContentType::Structs, *package) << "\"\n";
-		os << R"(#include "SDK/)" << GenerateFileName(FileContentType::Classes, *package) << "\"\n";
-		if (generator->ShouldGenerateFunctionParametersFile())
-		{
-			os << R"(#include "SDK/)" << GenerateFileName(FileContentType::FunctionParameters, *package) << "\"\n";
-		}
+		os << R"(#include "SDK/)" << GenerateFileName(FileContentType::Classes, package) << "\"\n";
 	}
 }
 
@@ -144,7 +136,7 @@ void ProcessPackages(const fs::path& path)
 	const auto sdkPath = path / "SDK";
 	fs::create_directories(sdkPath);
 	
-	std::vector<std::unique_ptr<Package>> packages;
+	std::vector<Package> packages;
 
 	std::unordered_map<UEObject, bool> processedObjects;
 
@@ -156,31 +148,12 @@ void ProcessPackages(const fs::path& path)
 
 	for (auto obj : packageObjects)
 	{
-		auto package = std::make_unique<Package>(obj);
+		Package package(obj);
 
-		package->Process(processedObjects);
-		if (package->Save(sdkPath))
+		package.Process(processedObjects);
+		if (package.Save(sdkPath))
 		{
-			Package::PackageMap[obj] = package.get();
-
 			packages.emplace_back(std::move(package));
-		}
-	}
-
-	if (!packages.empty())
-	{
-		// std::sort doesn't work, so use a simple bubble sort
-		//std::sort(std::begin(packages), std::end(packages), PackageDependencyComparer());
-		const PackageDependencyComparer comparer;
-		for (auto i = 0u; i < packages.size() - 1; ++i)
-		{
-			for (auto j = 0u; j < packages.size() - i - 1; ++j)
-			{
-				if (!comparer(packages[j], packages[j + 1]))
-				{
-					std::swap(packages[j], packages[j + 1]);
-				}
-			}
 		}
 	}
 

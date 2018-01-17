@@ -15,8 +15,6 @@ class Package
 	friend bool operator==(const Package& lhs, const Package& rhs);
 
 public:
-	static std::unordered_map<UEObject, const Package*> PackageMap;
-
 	/// <summary>
 	/// Constructor.
 	/// </summary>
@@ -285,46 +283,3 @@ namespace std
 
 inline bool operator==(const Package& lhs, const Package& rhs) { return rhs.packageObj.GetAddress() == lhs.packageObj.GetAddress(); }
 inline bool operator!=(const Package& lhs, const Package& rhs) { return !(lhs == rhs); }
-
-struct PackageDependencyComparer
-{
-	bool operator()(const std::unique_ptr<Package>& lhs, const std::unique_ptr<Package>& rhs) const
-	{
-		return operator()(*lhs, *rhs);
-	}
-
-	bool operator()(const Package* lhs, const Package* rhs) const
-	{
-		return operator()(*lhs, *rhs);
-	}
-
-	bool operator()(const Package& lhs, const Package& rhs) const
-	{
-		if (rhs.dependencies.empty())
-		{
-			return false;
-		}
-
-		if (std::find(std::begin(rhs.dependencies), std::end(rhs.dependencies), lhs.packageObj) != std::end(rhs.dependencies))
-		{
-			return true;
-		}
-
-		for (const auto dep : rhs.dependencies)
-		{
-			const auto package = Package::PackageMap[dep];
-			if (package == nullptr)
-			{
-				// Missing package, should not occur...
-				continue;
-			}
-
-			if (operator()(lhs, *package))
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-};
