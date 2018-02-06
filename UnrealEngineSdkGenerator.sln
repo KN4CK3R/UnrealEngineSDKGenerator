@@ -11,6 +11,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnrealEngine3", "UnrealEngi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnrealEngine4", "UnrealEngine4.vcxproj", "{8421CC8C-A3DB-4F2F-9672-4DDAA9C9D391}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7F7ABE9F-865E-4A84-A00B-41DA5014DBF6}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
