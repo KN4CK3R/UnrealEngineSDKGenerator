@@ -479,6 +479,19 @@ UEClass UEAssetClassProperty::StaticClass()
 	return c;
 }
 //---------------------------------------------------------------------------
+//UESoftObjectProperty
+//---------------------------------------------------------------------------
+UEProperty::Info UESoftObjectProperty::GetInfo() const
+{
+	return Info::Create(PropertyType::Container, sizeof(FSoftObjectPtr), false, "TSoftObjectPtr<class " + MakeValidName(GetPropertyClass().GetNameCPP()) + ">");
+}
+//---------------------------------------------------------------------------
+UEClass UESoftObjectProperty::StaticClass()
+{
+	static auto c = ObjectsStore().FindClass("Class CoreUObject.SoftObjectProperty");
+	return c;
+}
+//---------------------------------------------------------------------------
 //UENameProperty
 //---------------------------------------------------------------------------
 UEProperty::Info UENameProperty::GetInfo() const

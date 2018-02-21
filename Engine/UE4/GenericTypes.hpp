@@ -417,6 +417,16 @@ public:
 	static UEClass StaticClass();
 };
 
+class UESoftObjectProperty : public UEObjectPropertyBase
+{
+public:
+	using UEObjectPropertyBase::UEObjectPropertyBase;
+
+	UEProperty::Info GetInfo() const;
+
+	static UEClass StaticClass();
+};
+
 class UENameProperty : public UEProperty
 {
 public:

@@ -155,6 +155,17 @@ class FAssetPtr : public TPersistentObjectPtr<FStringAssetReference>
 
 };
 
+struct FSoftObjectPath
+{
+	FName AssetPathName;
+	FString SubPathString;
+};
+
+class FSoftObjectPtr : public TPersistentObjectPtr<FSoftObjectPath>
+{
+
+};
+
 struct FGuid
 {
 	uint32_t A;

@@ -149,6 +149,10 @@ UEProperty::Info UEProperty::GetInfo() const
 		{
 			return Cast<UEAssetClassProperty>().GetInfo();
 		}
+		if (IsA<UESoftObjectProperty>())
+		{
+			return Cast<UESoftObjectProperty>().GetInfo();
+		}
 		if (IsA<UENameProperty>())
 		{
 			return Cast<UENameProperty>().GetInfo();
