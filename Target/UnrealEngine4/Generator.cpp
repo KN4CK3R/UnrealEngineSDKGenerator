@@ -683,6 +683,23 @@ class TAssetPtr : FAssetPtr
 
 };
 
+struct FSoftObjectPath
+{
+	FName AssetPathName;
+	FString SubPathString;
+};
+
+class FSoftObjectPtr : public TPersistentObjectPtr<FSoftObjectPath>
+{
+
+};
+
+template<typename ObjectType>
+class TSoftObjectPtr : FSoftObjectPtr
+{
+
+};
+
 struct FUniqueObjectGuid_
 {
 	char UnknownData[0x10];
