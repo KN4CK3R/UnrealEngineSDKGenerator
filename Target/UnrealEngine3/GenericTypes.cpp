@@ -1,4 +1,4 @@
-#include "IGenerator.hpp"
+#include "../IGenerator.hpp"
 #include "GenericTypes.hpp"
 #include "ObjectsStore.hpp"
 #include "NamesStore.hpp"
@@ -428,5 +428,14 @@ UEClass UEDelegateProperty::StaticClass()
 {
 	static auto c = ObjectsStore().FindClass("Class Core.DelegateProperty");
 	return c;
+}
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+//GetCustomPropertyInfo for game depended properties.
+//---------------------------------------------------------------------------
+bool UEProperty::GetCustomPropertyInfo(const UEProperty& property, Info &info)
+{
+	return false;
 }
 //---------------------------------------------------------------------------

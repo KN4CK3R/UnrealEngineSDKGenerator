@@ -189,6 +189,12 @@ UEProperty::Info UEProperty::GetInfo() const
 		{
 			return Cast<UEEnumProperty>().GetInfo();
 		}
+
+		Info info;
+		if (GetCustomPropertyInfo(*this, info))
+		{
+			return info;
+		}
 	}
 	return { PropertyType::Unknown };
 }

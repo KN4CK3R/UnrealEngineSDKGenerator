@@ -133,6 +133,12 @@ UEProperty::Info UEProperty::GetInfo() const
 		{
 			return Cast<UEDelegateProperty>().GetInfo();
 		}
+
+		Info info;
+		if (GetCustomPropertyInfo(*this, info))
+		{
+			return info;
+		}
 	}
 	return { PropertyType::Unknown };
 }

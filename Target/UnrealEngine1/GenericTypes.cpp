@@ -412,3 +412,13 @@ UEClass UEDelegateProperty::StaticClass()
 	return c;
 }
 //---------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------
+//GetCustomPropertyInfo for game depended properties.
+//---------------------------------------------------------------------------
+bool UEProperty::GetCustomPropertyInfo(const UEProperty& property, Info &info)
+{
+	return false;
+}
+//---------------------------------------------------------------------------

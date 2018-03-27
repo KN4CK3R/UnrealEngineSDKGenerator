@@ -191,6 +191,8 @@ public:
 
 	Info GetInfo() const;
 
+	static bool GetCustomPropertyInfo(const UEProperty& property, Info &info);
+
 	static UEClass StaticClass();
 };
 

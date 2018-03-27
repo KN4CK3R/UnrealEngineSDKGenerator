@@ -15,7 +15,7 @@ You want to generate a SDK for a game called MyCoolGame. MyCoolGame uses the Unr
 
 (Hint: If the batch file is in the default folder you can use TAB to autocomplete the names. Just remove the file extension in the name.)
 
-The batch file copies the content, replaces some text and creates the new project files for you. You can do this manual too but why should you...? :smile:
+The batch file copies the content, replaces some text and creates the new project files for you. You can do this manual too but why should you...?
 
 As last step you need to open the _UnrealEngineSdkGenerator.sln_ and add the new _MyCoolGame.vcxproj_ to the solution.
 
@@ -130,7 +130,7 @@ If you want to add methods to a class you can specify them and this method retur
 `GetClassAlignas()`
 Some classes need a special memory alignment (since Unreal Engine 4). This method gets the alignas value for the classes you have specified.
 
-### And now the advanced methods: :wink:
+### And now the advanced methods:
 
 `GetBasicDeclarations()`
 This method returns a string with code which contains all the basic classes. Usually this is the same code you need to put in the _EngineClasses.hpp_. You should check the contained projects for examples.
@@ -223,6 +223,41 @@ It looks complicated but for the best explanation of this method you should have
 		PredefinedMethod::Inline(R"(inline FVector2D(float x, float y) : X(x), Y(y) { })")
 	};
 	```
+### Support for custom properties:
+Some games add custom properties which are not included in the official Unreal Engine version. Because they are only valid in the project of the game they should not be added to global `GenericTypes.hpp/cpp` files. Instead you can add them to the `GetCustomPropertyInfo` method in the game specific `GenericTypes.cpp` file. In this example the game uses a property `UStdStringProperty` which indicates a `std::string` member. You would then put the following code into the `GetCustomPropertyInfo` method:
+```cpp
+//---------------------------------------------------------------------------
+//UEStdStringProperty
+//---------------------------------------------------------------------------
+class UEStdStringProperty : public UEProperty
+{
+public:
+	using UEProperty::UEProperty;
+
+	Info GetInfo() const
+	{
+		return Info::Create(PropertyType::PredefinedStruct, sizeof(std::string), true, "std::string");
+	}
+
+	static UEClass StaticClass()
+	{
+		static auto c = ObjectsStore().FindClass("Class CoreUObject.StdStringProperty");
+		return c;
+	}
+};
+
+bool UEProperty::GetCustomPropertyInfo(const UEProperty& property, Info &info)
+{
+	if (property.IsA<UEStdStringProperty>())
+	{
+		info = property.Cast<UEStdStringProperty>().GetInfo();
+
+		return true;
+	}
+
+	return false;
+}
+```
 
 ## And now?
 Compile the project and inject the DLL into the target. Use the debug build and a debugger to fix errors but use the release build to really generate the sdk. Otherwise you need to wait some minutes because the debug build is very slow. After you see the "Finished!" messagebox you can have a look at your new sdk.
@@ -267,7 +302,7 @@ XXX_Engine_functions.cpp
 ```
 To find these files just sort the SDK folder by file size. The biggest files are the files you are looking for.
 
-Now you can use the SDK in your project. Have fun. :smile:
+Now you can use the SDK in your project. Have fun.
 
 ## Known Errors
 Sometimes you can't compile the generated SDK. Here are some known errors and a solution how to fix them:
