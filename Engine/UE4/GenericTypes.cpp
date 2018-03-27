@@ -203,18 +203,17 @@ bool UEByteProperty::IsEnum() const
 //---------------------------------------------------------------------------
 //UEBoolProperty
 //---------------------------------------------------------------------------
-
 int GetBitPosition(uint8_t value)
 {
-	int i4 = !(value & 0xf) << 2;
+	const int i4 = !(value & 0xf) << 2;
 	value >>= i4;
 
-	int i2 = !(value & 0x3) << 1;
+	const int i2 = !(value & 0x3) << 1;
 	value >>= i2;
 
-	int i1 = !(value & 0x1);
+	const int i1 = !(value & 0x1);
 
-	int i0 = (value >> i1) & 1 ? 0 : -8;
+	const int i0 = (value >> i1) & 1 ? 0 : -8;
 
 	return i4 + i2 + i1 + i0;
 }
