@@ -223,6 +223,28 @@ public:
 	int32_t Flags;
 	int32_t ClusterIndex;
 	int32_t SerialNumber;
+
+	enum class EInternalObjectFlags : int32_t
+	{
+		None = 0,
+		Native = 1 << 25,
+		Async = 1 << 26,
+		AsyncLoading = 1 << 27,
+		Unreachable = 1 << 28,
+		PendingKill = 1 << 29,
+		RootSet = 1 << 30,
+		NoStrongReference = 1 << 31
+	};
+
+	inline bool IsUnreachable() const
+	{
+		return !!(Flags & static_cast<std::underlying_type_t<EInternalObjectFlags>>(EInternalObjectFlags::Unreachable));
+	}
+
+	inline bool IsPendingKill() const
+	{
+		return !!(Flags & static_cast<std::underlying_type_t<EInternalObjectFlags>>(EInternalObjectFlags::PendingKill));
+	}
 };
 
 class TUObjectArray
