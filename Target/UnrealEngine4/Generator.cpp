@@ -482,7 +482,7 @@ public:
 
 	FString(const wchar_t* other)
 	{
-		Max = Count = *other ? std::wcslen(other) + 1 : 0;
+		Max = Count = *other ? static_cast<int32_t>(std::wcslen(other)) + 1 : 0;
 
 		if (Count)
 		{
