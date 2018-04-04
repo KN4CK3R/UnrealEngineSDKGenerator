@@ -527,7 +527,7 @@ UEClass UEStructProperty::StaticClass()
 //---------------------------------------------------------------------------
 UEProperty::Info UEStrProperty::GetInfo() const
 {
-	return Info::Create(PropertyType::PredefinedStruct, sizeof(FString), true, "struct FString");
+	return Info::Create(PropertyType::PredefinedStruct, sizeof(FString), true, "class FString");
 }
 //---------------------------------------------------------------------------
 UEClass UEStrProperty::StaticClass()
